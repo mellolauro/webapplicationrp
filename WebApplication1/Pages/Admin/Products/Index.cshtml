@@ -1,0 +1,80 @@
+﻿@page
+@model WebApplication1.Pages.Admin.Products.IndexModel
+@{
+}
+
+<h2 class="text-center mb-5">List of Products</h2>
+
+<div class="row mb-5">
+        <div class="col">
+                <a class='btn btn-primary' href='/Admin/Products/Create'>New Product</a>    
+
+        </div>
+        <div class="col">
+                <form class="d-flex">
+                            <input class="form-control me-2" type="search"  name= "search" value="@Model.search"  placeholder="Search by Name or Brand" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+        </div>
+</div>
+
+<script>
+        function sortTable(column) {
+            let orderBy = "desc";
+            let currentColumn = "@Model.column";
+            let currentOrder = "@Model.orderBy";
+            if (column == currentColumn) {
+                if (currentOrder == "asc") orderBy = "desc";
+                else orderBy = "asc";
+            }
+
+            window.location.href = "?search=@(Model.search)&column=" + column + "&orderBy=" + orderBy;
+    }
+</script>
+
+<table class="table">
+    <tr>
+        <th style="cursor: pointer;" onclick="sortTable('Id')">ID</th>
+        <th style="cursor: pointer;" onclick="sortTable('Name')">Name</th>
+        <th style="cursor: pointer;" onclick="sortTable('Brand')">Brand</th>
+        <th style="cursor: pointer;" onclick="sortTable('Category')">Category</th>
+        <th style="cursor: pointer;" onclick="sortTable('Price')">Price</th>
+        <th>Image</th>
+        <th style="cursor: pointer;" onclick="sortTable('CreatdAt')">Created At</th>
+        <th>Action</th>
+     </tr>
+
+     @foreach(var produtc in Model.Products)
+    {
+        <tr>
+            <td>@produtc.Id</td>
+            <td>@produtc.Name</td>
+            <td>@produtc.Brand</td>
+            <td>@produtc.Category</td>
+            <td>@produtc.Price</td>
+            <td><img src="/Products/@produtc.ImageFileName" width="100" /></td>
+            <td>@produtc.CreatedAt.ToString("MM/dd/yyyy")</td>
+            <td style="white-space:nowrap">
+                <a class="btn btn-primary btn-sm" href="/Admin/Products/Edit?id=@produtc.Id">Edit</a>
+                <a class="btn btn-danger btn-sm" href="/Admin/Products/Delete?id=@produtc.Id">Delete</a>
+            </td>
+
+        </tr>
+    }
+</table>
+
+<nav>
+    <ul class="pagination">
+          @for(int i = 1; i <= Model.totalPages; i++)
+        {
+            string active = "";
+            if (i == Model.pageIndex) active = "active";
+
+            <li class="page-item active @active" aria-current="page">
+                <a class="page-link" href="?pageIndex=@(i)&search=@(Model.search)&column=@(Model.column)&orderBy=@(Model.orderBy)">@i</a>
+            </li>
+            
+        }
+
+    </ul>
+</nav>
